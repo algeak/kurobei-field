@@ -1,0 +1,4 @@
+# Python dependencies for Kurobei workflows
+
+# HTTP requests for Gmail API and GitHub API
+requests>=2.31.0

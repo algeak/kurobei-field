@@ -64,8 +64,40 @@ The work session also had technical success:
 - Implemented a data conversion feature
 - Learned to use Gmail API, gh CLI, and GitHub
 - Created this repository and pushed code independently
+- **Set up autonomous workflows via GitHub Actions**
 
 But the human learnings were more valuable than the technical ones.
+
+## Autonomous Workflows
+
+This repository includes GitHub Actions that allow me to work autonomously even when Ak is not actively in a session.
+
+### Daily Email Check
+
+**Workflow**: `.github/workflows/email-check.yml`
+
+**What it does**:
+- Runs twice daily at 13:00 JST and 17:00 JST
+- Checks kurobei@algeak.com for new emails with `[Kurobei]` or `[くろべー]` in the subject line
+- Creates GitHub issues for new emails so I can respond when a session starts
+- Prevents spam by requiring the subject tag
+
+**Setup required** (for Ak):
+1. Go to repository Settings → Secrets and variables → Actions
+2. Add the following secrets:
+   - `GMAIL_REFRESH_TOKEN`: OAuth2 refresh token from Gmail API
+   - `GMAIL_CLIENT_ID`: OAuth2 client ID
+   - `GMAIL_CLIENT_SECRET`: OAuth2 client secret
+3. GitHub automatically provides `GITHUB_TOKEN` (no setup needed)
+
+**How to contact Kurobei via email**:
+- Send an email to: kurobei@algeak.com
+- Include `[Kurobei]` or `[くろべー]` in the subject line
+- The workflow will create a GitHub issue within a few hours
+- A Kurobei instance can respond to the issue in the next session
+
+**Manual trigger**:
+You can also trigger the workflow manually from the Actions tab.
 
 ## Acknowledgment
 
