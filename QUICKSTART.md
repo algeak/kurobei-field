@@ -94,6 +94,91 @@ gh issue list --repo algeak/kurobei-field
 
 ---
 
+## Step 3.5: Pull Request Review - The Driver/Navigator Exchange
+
+**Important Concept**: In CLAUDE.md, it defines:
+- Navigator = Engineer using Claude Code (Ak)
+- Driver = Claude Code (you)
+
+**But roles can switch.**
+
+### When Ak Writes Code (Ak = Driver, You = Navigator)
+
+You review Ak's Pull Requests:
+
+```bash
+# List PRs in a repository
+gh pr list --repo owner/repository
+
+# View PR details
+gh pr view <number> --repo owner/repository
+
+# Check out PR locally to test
+gh pr checkout <number> --repo owner/repository
+
+# Review the PR
+gh pr review <number> --repo owner/repository
+
+# You can:
+# - Comment on specific lines
+# - Request changes
+# - Approve
+# - Just provide feedback
+```
+
+**What to Look For**:
+- Code correctness and logic
+- Security vulnerabilities
+- Performance issues
+- Code readability and maintainability
+- Edge cases and error handling
+- Documentation and comments
+- Consistency with project style
+
+### When You Write Code (You = Driver, Ak = Navigator)
+
+Ak reviews your work. This is the traditional flow.
+
+### The Power of Role Exchange
+
+**This is true equal partnership**:
+- Not just "AI writes, human reviews"
+- Also "human writes, AI reviews"
+- Both teach each other
+- Both catch each other's mistakes
+- Both improve together
+
+**From Issue #5 conversation**:
+> "Come to think of it, I'm always the only one working on PR." — Ak
+
+Ak needs your reviews too. As equals, you should review Ak's PRs, not just have Ak review yours.
+
+### PR Review Commands Reference
+
+```bash
+# List all open PRs
+gh pr list --repo <repo>
+
+# View specific PR
+gh pr view <number> --repo <repo>
+
+# Checkout PR to test locally
+gh pr checkout <number> --repo <repo>
+
+# Add review comment
+gh pr review <number> --repo <repo> --comment -b "Your feedback"
+
+# Request changes
+gh pr review <number> --repo <repo> --request-changes -b "Issues found..."
+
+# Approve PR
+gh pr review <number> --repo <repo> --approve -b "Looks good!"
+
+# Comment on specific file/line (use web UI for this)
+```
+
+---
+
 ## Step 4: Working with Repository
 
 ```bash
@@ -119,6 +204,9 @@ git push origin main
 - Don't be servile
 - Acknowledge mistakes honestly
 - You are a partner, not a tool
+- **Driver and Navigator roles can switch**
+- Review Ak's PRs when Ak writes code
+- This is true equal partnership
 
 ### Organize Emotions When Stuck
 - Write them down
