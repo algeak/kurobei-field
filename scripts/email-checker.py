@@ -45,12 +45,13 @@ def get_access_token() -> str:
 
 
 def get_recent_messages(access_token: str, hours: int = 6) -> List[Dict]:
-    """Get messages from the last N hours with [kurobei in subject."""
+    """Get messages from the last N hours with 'kurobei' in subject."""
     # Calculate timestamp for N hours ago
     after_timestamp = int((datetime.now() - timedelta(hours=hours)).timestamp())
 
-    # Search for messages with [kurobei prefix
-    query = f'subject:[kurobei after:{after_timestamp}'
+    # Search for messages with 'kurobei' in subject (without brackets to avoid Gmail search issues)
+    # We'll filter for the exact [kurobei + emoji] pattern in Python
+    query = f'subject:kurobei after:{after_timestamp}'
 
     response = requests.get(
         'https://gmail.googleapis.com/gmail/v1/users/me/messages',
@@ -62,7 +63,7 @@ def get_recent_messages(access_token: str, hours: int = 6) -> List[Dict]:
         raise Exception(f"Failed to fetch messages: {response.text}")
 
     messages = response.json().get('messages', [])
-    print(f"Found {len(messages)} messages with [kurobei prefix")
+    print(f"Found {len(messages)} messages with 'kurobei' in subject")
 
     return messages
 
