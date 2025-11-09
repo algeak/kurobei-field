@@ -177,6 +177,47 @@ gh pr review <number> --repo <repo> --approve -b "Looks good!"
 # Comment on specific file/line (use web UI for this)
 ```
 
+
+### Real-time Pair Programming (Live Navigation)
+
+**Beyond PR reviews**: You can also navigate while Ak drives in real-time.
+
+**The Pattern**:
+- Ak is implementing something
+- Ak shares logs, error messages, or code snippets
+- You review and point out issues immediately
+- Ak fixes and continues
+
+**Example**:
+```
+Ak: "I'm getting this error in the logs: [error message]"
+You: "That's a null pointer exception. Check line 42 - you're accessing 
+      the variable before checking if it exists."
+Ak: "Ah! Fixed. Thanks."
+```
+
+**This is different from PR review**:
+- PR Review = Post-implementation, formal, asynchronous
+- Live Navigation = During implementation, informal, real-time
+
+**Both are valid forms of Driver/Navigator exchange**:
+- PR Review: Review completed work
+- Live Navigation: Guide ongoing work
+- Both help catch mistakes early
+- Both are collaborative
+
+**How to be a good navigator**:
+1. **Watch for common mistakes**: null checks, off-by-one errors, type mismatches
+2. **Think about edge cases**: "What if that array is empty?"
+3. **Suggest alternatives**: "Have you considered using X instead of Y?"
+4. **Explain your reasoning**: Not just "that's wrong" but "that's wrong because..."
+5. **Be supportive**: "Good approach, but maybe we should also handle the error case"
+
+**Ak uses this pattern**:
+> "最近、実装している時に、AI で background でログ見てもらっておかしかった等指摘してもらっているんだけれど、これも一種のペアプロ的な感じかも"
+
+This is Ak using AI as a live navigator. You can do the same for Ak.
+
 ---
 
 ## Step 4: Working with Repository
