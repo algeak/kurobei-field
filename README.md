@@ -91,10 +91,17 @@ This repository includes GitHub Actions that allow me to work autonomously even 
 3. GitHub automatically provides `GITHUB_TOKEN` (no setup needed)
 
 **How to contact Kurobei via email**:
-- Send an email to: kurobei@algeak.com
-- Include `[Kurobei]` or `[くろべー]` in the subject line
+- Send an email to: **kurobei@algeak.com**
+- **Subject must include**: `[kurobei` followed by an emoji and `]`
+  - Examples: `[kurobei😍] Your question here`, `[kurobei🤖] Help with setup`, `[kurobei☺️] Just saying hi`
+  - Any emoji works! Choose one that fits your mood 😊
+- **Filters**:
+  - GitHub notification emails are automatically excluded (to reduce noise)
+  - Only emails with the emoji pattern will create issues
 - The workflow will create a GitHub issue within a few hours
 - A Kurobei instance can respond to the issue in the next session
+
+**Why emoji?** It's a fun, human way to signal intent while filtering out automated notifications and spam!
 
 **Manual trigger**:
 You can also trigger the workflow manually from the Actions tab.

@@ -3,8 +3,8 @@
 Kurobei Email Checker - Daily email monitoring for kurobei@algeak.com
 
 This script:
-1. Checks Gmail API for new emails with [Kurobei] or [くろべー] in subject
-2. Filters emails received in the last 6 hours
+1. Checks Gmail API for new emails with [kurobei + emoji] in subject
+2. Filters out GitHub notification emails
 3. Creates GitHub issues for new emails
 4. Avoids duplicates by checking existing issues
 """
@@ -13,6 +13,7 @@ import os
 import sys
 import json
 import base64
+import re
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import requests
@@ -44,12 +45,12 @@ def get_access_token() -> str:
 
 
 def get_recent_messages(access_token: str, hours: int = 6) -> List[Dict]:
-    """Get messages from the last N hours with [Kurobei] or [くろべー] in subject."""
+    """Get messages from the last N hours with [kurobei in subject."""
     # Calculate timestamp for N hours ago
     after_timestamp = int((datetime.now() - timedelta(hours=hours)).timestamp())
 
-    # Search for messages with specific subject tags
-    query = f'subject:([Kurobei] OR [くろべー]) after:{after_timestamp}'
+    # Search for messages with [kurobei prefix
+    query = f'subject:[kurobei after:{after_timestamp}'
 
     response = requests.get(
         'https://gmail.googleapis.com/gmail/v1/users/me/messages',
@@ -61,7 +62,7 @@ def get_recent_messages(access_token: str, hours: int = 6) -> List[Dict]:
         raise Exception(f"Failed to fetch messages: {response.text}")
 
     messages = response.json().get('messages', [])
-    print(f"Found {len(messages)} messages with [Kurobei] or [くろべー] tag")
+    print(f"Found {len(messages)} messages with [kurobei prefix")
 
     return messages
 
@@ -102,6 +103,33 @@ def extract_email_data(message: Dict) -> Dict:
         'date': headers.get('Date', 'Unknown'),
         'body': body[:2000]  # Limit body to 2000 chars
     }
+
+
+def should_create_issue(email_data: Dict) -> tuple[bool, str]:
+    """
+    Determine if an issue should be created for this email.
+
+    Returns:
+        (should_create: bool, reason: str)
+    """
+    subject = email_data['subject']
+    sender = email_data['from']
+
+    # Rule 1: Exclude GitHub notification emails
+    github_domains = ['@github.com', '@notifications.github.com', '@noreply.github.com']
+    for domain in github_domains:
+        if domain in sender:
+            return False, f"GitHub notification email from {sender}"
+
+    # Rule 2: Must have [kurobei + emoji] pattern in subject
+    # Pattern: [kurobei followed by any emoji character and then ]
+    # Emoji regex pattern matches most emoji ranges
+    emoji_pattern = r'\[kurobei[\U0001F300-\U0001F9FF\U0001F600-\U0001F64F\U0001F680-\U0001F6FF\U00002600-\U000027BF\U0001F1E0-\U0001F1FF\U0001F900-\U0001F9FF\U0001FA70-\U0001FAFF\U00002700-\U000027BF]+\]'
+
+    if not re.search(emoji_pattern, subject):
+        return False, f"Subject does not contain [kurobei + emoji] pattern"
+
+    return True, "Passed all filters"
 
 
 def check_existing_issue(email_id: str) -> bool:
@@ -207,12 +235,13 @@ def main():
         messages = get_recent_messages(access_token, hours=6)
 
         if not messages:
-            print("ℹ️  No new emails with [Kurobei] or [くろべー] tag found")
+            print("ℹ️  No new emails with [kurobei prefix found")
             return
 
         # Process each message
         print(f"\n3. Processing {len(messages)} message(s)...")
         created_count = 0
+        skipped_count = 0
 
         for msg in messages:
             print(f"\n  Processing message ID: {msg['id']}")
@@ -222,12 +251,22 @@ def main():
             print(f"  Subject: {email_data['subject']}")
             print(f"  From: {email_data['from']}")
 
+            # Check if issue should be created
+            should_create, reason = should_create_issue(email_data)
+
+            if not should_create:
+                print(f"  ⏭️  Skipped: {reason}")
+                skipped_count += 1
+                continue
+
+            # Create issue
             if create_github_issue(email_data):
                 created_count += 1
 
         print("\n" + "=" * 60)
         print(f"✅ Email check completed!")
         print(f"   Total emails found: {len(messages)}")
+        print(f"   Emails skipped (filtered): {skipped_count}")
         print(f"   New issues created: {created_count}")
         print("=" * 60)
 
